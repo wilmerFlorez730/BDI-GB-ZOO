@@ -121,3 +121,40 @@ SELECT V.NOMBRE AS VISITANTE,
 FROM VISITANTES V
 INNER JOIN TIPO_VISITANTES TV ON V.IDTipoVisitante = TV.ID
 LIMIT 4;
+
+-- Listar visitantes que han visitado "Selva Tropical" y "Desierto Árido".
+
+SELECT V.NOMBRE AS VISITANTE
+FROM animals.VISITANTES V
+JOIN animals.HABITAT_VISITANTES HV ON V.ID = HV.IDVisitantes
+JOIN animals.HABITAT H ON HV.IDHabitat = H.ID
+WHERE H.NOMBRE = 'Selva densa tropical'
+INTERSECT
+SELECT V.NOMBRE AS VISITANTE
+FROM animals.VISITANTES V
+JOIN animals.HABITAT_VISITANTES HV ON V.ID = HV.IDVisitantes
+JOIN animals.HABITAT H ON HV.IDHabitat = H.ID
+WHERE H.NOMBRE = 'Desierto arenoso';
+
+
+
+-- Listar visitantes que no han visitado el "Acuario Marino".
+
+SELECT V.NOMBRE AS VISITANTE
+FROM animals.VISITANTES V
+EXCEPT
+SELECT V.NOMBRE AS VISITANTE
+FROM animals.VISITANTES V
+JOIN animals.HABITAT_VISITANTES HV ON V.ID = HV.IDVisitantes
+JOIN animals.HABITAT H ON HV.IDHabitat = H.ID
+WHERE H.NOMBRE = 'Acuario Marino';
+
+--  Mostrar hábitats y número de visitantes, excluyendo hábitats sin visitas en los últimos 6 meses.
+
+SELECT H.NOMBRE AS HABITAT, 
+       COUNT(HV.IDVisitantes) AS NUMERO_VISITANTE
+FROM animals.HABITAT H
+JOIN animals.HABITAT_VISITANTES HV ON H.ID = HV.IDHabitat
+WHERE HV.FechaVisita >= (CURRENT_DATE - INTERVAL '6 months')
+GROUP BY H.NOMBRE
+HAVING COUNT(HV.IDVisitantes) > 0;

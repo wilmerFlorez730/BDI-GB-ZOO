@@ -44,3 +44,36 @@ SELECT NOMBRE AS NOMBRE_COMPLETO,
        CONCAT(SUBSTRING(NOMBRE, 1, 1)
        , '. ',SPLIT_PART(nombre, ' ', 2)) AS NOMBRE_FORMATEADO
 FROM CUIDADOR;
+
+
+
+-- Listar cuidadores con su antigüedad en años.
+
+SELECT C.NOMBRE AS CUIDADOR, 
+       EXTRACT(YEAR FROM AGE(C.FechaContratacion)) AS ANTIGUEDAD_EN_AÑOS
+FROM animals.CUIDADOR C;
+
+
+
+-- Listar hábitats visitados en el último mes y fecha de última visita.
+
+SELECT H.NOMBRE AS HABITAT, 
+       MAX(HV.FechaVisita) AS FECHA_ULTIMA_VISITA
+FROM animals.HABITAT_VISITANTES HV
+JOIN animals.HABITAT H ON HV.IDHabitat = H.ID
+WHERE HV.FechaVisita >= (CURRENT_DATE - INTERVAL '1 month')
+GROUP BY H.NOMBRE;
+
+
+
+-- Mostrar nombre completo de visitantes en mayúsculas.
+
+SELECT UPPER(V.NOMBRE) AS NOMBRE_COMPLETO
+FROM animals.VISITANTES V;
+
+
+
+-- Mostrar inicial del nombre y apellido de los cuidadores.
+
+SELECT CONCAT(SUBSTRING(C.Nombre FROM 1 FOR 1), '. ', SPLIT_PART(C.Nombre, ' ', 2)) AS NOMBRE_FORMATADO
+FROM animals.CUIDADOR C;
